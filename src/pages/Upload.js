@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Container, Typography, Button, LinearProgress } from '@mui/material';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-function Upload() {
+function Upload({ onScheduleUpdate }) {
     const [demandFile, setDemandFile] = useState(null);
     const [costFile, setCostFile] = useState(null);
     const [workersFile, setWorkersFile] = useState(null);
     const [uploading, setUploading] = useState(false);
+    const navigate = useNavigate();  // Hook to navigate to /schedule
 
     // Handle file changes
     const handleDemandFileChange = (event) => {
@@ -35,12 +37,16 @@ function Upload() {
 
         try {
             setUploading(true);
-            await axios.post('http://localhost:5000/api/upload', formData, {
+            const res = await axios.post('http://localhost:5000/api/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            alert('Files uploaded successfully');
+
+            // Update the schedule in the parent state and navigate to the schedule display page
+            onScheduleUpdate(res.data.schedule);
+            navigate('/schedule');  // Navigate to the /schedule page
+
         } catch (error) {
             console.error('Error uploading the files', error.response?.data || error.message);
             alert(`Failed to upload files: ${error.response?.data || error.message}`);
@@ -61,7 +67,7 @@ function Upload() {
             {/* Demand File Input */}
             <div>
                 <input
-                    accept=".xlsx, .xls"
+                    accept=".xlsx, .xls, .csv"
                     style={{ display: 'none' }}
                     id="demand-file"
                     type="file"
@@ -82,7 +88,7 @@ function Upload() {
             {/* Cost File Input */}
             <div style={{ marginTop: 20 }}>
                 <input
-                    accept=".xlsx, .xls"
+                    accept=".xlsx, .xls, .csv"
                     style={{ display: 'none' }}
                     id="cost-file"
                     type="file"
@@ -103,7 +109,7 @@ function Upload() {
             {/* Workers File Input */}
             <div style={{ marginTop: 20 }}>
                 <input
-                    accept=".xlsx, .xls"
+                    accept=".xlsx, .xls, .csv"
                     style={{ display: 'none' }}
                     id="workers-file"
                     type="file"
