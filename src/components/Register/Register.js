@@ -8,7 +8,6 @@ function Register() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [displayName, setDisplayName] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
@@ -18,7 +17,7 @@ function Register() {
             try {
             
                 // Make a POST request to the registration endpoint
-                const response = await fetch('http://localhost:5000/api/Users', {
+                const response = await fetch('http://localhost:5000/api/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -27,11 +26,10 @@ function Register() {
                     body: JSON.stringify({
                         username: username,
                         password: password,
-                        displayName: displayName,
                     })
                 });
 
-                if (response.status === 200) {
+                if (response.ok) {
                     navigate('/'); // Redirect to the home page or desired route
                 } else {
                     //navigate('/');
@@ -56,9 +54,6 @@ function Register() {
                 case 'confirmPassword':
                     setConfirmPassword(value);
                     break;
-                case 'displayName':
-                    setDisplayName(value);
-                    break;
                 default:
                     break;
             
@@ -66,7 +61,7 @@ function Register() {
     };
     const saveDataToLocalStorage = () => {
         // const { username, password, displayName, profilePicture } = this.state;
-        const data = { username, password, displayName };
+        const data = { username, password };
         // check if the username already exists in localStorage
         const existingData = JSON.parse(localStorage.getItem(username));
         /*if (existingData) {
@@ -136,10 +131,7 @@ function Register() {
                         <input type="password" id="confirm-password" name="confirmPassword" required value={confirmPassword} onChange={handleChange} />
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="display-name">Display Name</label>
-                        <input type="text" id="display-name" name="displayName" required value={displayName} onChange={handleChange} />
-                    </div>
+                
                     <button type="submit">Submit</button>
                 </form>
                 <div className="login-link">

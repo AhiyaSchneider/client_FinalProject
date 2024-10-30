@@ -13,7 +13,7 @@ function Login() {
     event.preventDefault();
   
     try {
-      const response = await fetch("http://localhost:5000/api/Tokens", {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -28,8 +28,8 @@ function Login() {
       if (response.ok) {
         const token = await response.text();
         localStorage.setItem(username, token);
-          //  navigate(`/upload`);
-          navigate(`/upload?username=${username}`);
+          //navigate(`/upload`);
+          navigate(`/api/upload?username=${username}`);
         } else {
             //navigate(`/upload`);
         setError("Invalid credentials, please try again.");
