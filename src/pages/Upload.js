@@ -3,62 +3,83 @@ import { Container, Typography, Button, LinearProgress } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import './Upload.css'
-
-
 
 function Upload({ onScheduleUpdate }) {
   const [demandFile, setDemandFile] = useState(null);
   const [costFile, setCostFile] = useState(null);
   const [workersFile, setWorkersFile] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const navigate = useNavigate();  // Hook to navigate to /schedule
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  // Handle file changes
-  const handleDemandFileChange = (event) => {
-    setDemandFile(event.target.files[0]);
+  const requiredHeaders = {
+    demandFile: ['Date', 'Time Interval', 'Worker Type', 'Demand'],
+    costFile: ['Worker ID', 'Worker Name', 'Skill', 'Hourly Cost', 'Available From', 'Available Until'],
+    workersFile: ['Worker ID', 'Worker Name', 'Skill', 'Available From', 'Available Until']
   };
 
-  const handleCostFileChange = (event) => {
-    setCostFile(event.target.files[0]);
+  const handleFileChange = (setter) => (event) => {
+    const file = event.target.files[0];
+    if (file && file.type !== 'text/csv') {
+      setError(`Please upload a CSV file.`);
+      setter(null);
+    } else {
+      setError('');
+      setter(file);
+    }
   };
 
-  const handleWorkersFileChange = (event) => {
-    setWorkersFile(event.target.files[0]);
+  const validateFileStructure = (file, expectedHeaders, fileName) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result;
+        const lines = text.split('\n');
+        const headers = lines[0].split(',').map(header => header.trim());
+
+        const missingHeaders = expectedHeaders.filter(header => !headers.includes(header));
+        if (missingHeaders.length > 0) {
+          reject(`The ${fileName} file is missing the following columns: ${missingHeaders.join(', ')}`);
+        } else {
+          resolve();
+        }
+      };
+      reader.onerror = () => reject(`Error reading ${fileName} file.`);
+      reader.readAsText(file);
+    });
   };
 
-  // Handle file upload
   const handleUpload = async () => {
     if (!demandFile || !costFile || !workersFile) {
-      alert('Please select all three files to upload.');
+      setError('Please select all three files to upload.');
       return;
     }
 
-    const formData = new FormData();
-    formData.append('demandFile', demandFile);
-    formData.append('costFile', costFile);
-    formData.append('workersFile', workersFile);
-
     try {
+      await Promise.all([
+        validateFileStructure(demandFile, requiredHeaders.demandFile, 'Demand Data'),
+        validateFileStructure(costFile, requiredHeaders.costFile, 'Cost Data'),
+        validateFileStructure(workersFile, requiredHeaders.workersFile, 'Workers List')
+      ]);
+
       setUploading(true);
+      setError('');
+
+      const formData = new FormData();
+      formData.append('demandFile', demandFile);
+      formData.append('costFile', costFile);
+      formData.append('workersFile', workersFile);
+
       const res = await axios.post('http://localhost:5000/api/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
 
-      // Update the schedule in the parent state and navigate to the schedule display page
       onScheduleUpdate(res.data.schedule);
-      navigate('/schedule');  // Navigate to the /schedule page
-
-    } catch (error) {
-      console.error('Error uploading the files', error.response?.data || error.message);
-      alert(`Failed to upload files: ${error.response?.data || error.message}`);
+      navigate('/schedule');
+    } catch (validationError) {
+      setError(validationError);
     } finally {
       setUploading(false);
-      setDemandFile(null);
-      setCostFile(null);
-      setWorkersFile(null);
     }
   };
 
@@ -80,54 +101,26 @@ function Upload({ onScheduleUpdate }) {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        background: 'linear-gradient(-45deg, #FF5733, #C70039, #900C3F, #581845)', // Pink to yellow to purple
+        background: 'linear-gradient(-45deg, #FF5733, #C70039, #900C3F, #581845)',
         backgroundSize: '400% 400%',
         zIndex: -1,
       }}
     >
-      <Container
-        maxWidth="sm"
-        style={{
-          minHeight: '100vh',          // Full viewport height
-          display: 'flex',
-          justifyContent: 'center',     // Horizontal centering
-          alignItems: 'center',         // Vertical centering
-          flexDirection: 'column',      // Stack children vertically
-          textAlign: 'center',          // Center-align text and buttons
-        }}
-      >
-
-        {/* Main Container Content */}
+      <Container maxWidth="sm" style={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', textAlign: 'center' }}>
         <motion.div
           id='motion-container-outer'
-          initial={{ opacity: 0, y: -50 }} // Initial position and opacity
-          animate={{ opacity: 1, y: 0 }}   // Final position and opacity
-          transition={{ duration: 0.6 }}    // Duration of the animation
-          style={{
-            width: '70%',
-            paddingTop: '2rem',
-            paddingBottom: '2rem',
-            overflow: 'hidden'
-          }}
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          style={{ width: '70%', paddingTop: '2rem', paddingBottom: '2rem', overflow: 'hidden' }}
         >
-          <Typography
-            variant="h4"
-            gutterBottom
-            style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 700, paddingBottom: 20, color: '#FFFFFF' }}
-          >
+          <Typography variant="h4" gutterBottom style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 700, paddingBottom: 20, color: '#FFFFFF' }}>
             Upload Files
           </Typography>
 
-
           {/* Demand File Input */}
           <div>
-            <input
-              accept=".xlsx, .xls, .csv"
-              style={{ display: 'none' }}
-              id="demand-file"
-              type="file"
-              onChange={handleDemandFileChange}
-            />
+            <input accept=".csv" style={{ display: 'none' }} id="demand-file" type="file" onChange={handleFileChange(setDemandFile)} />
             <label htmlFor="demand-file">
               <motion.div whileHover={{ scale: 1.10 }} style={{ display: 'inline-block', width: '100%' }}>
                 <Button
@@ -142,27 +135,18 @@ function Upload({ onScheduleUpdate }) {
                     width: '65%',
                     border: '1.5px solid #FFFFFF',
                     borderRadius: '15px'
-                  }}>
+                  }}
+                >
                   Choose Demand Data File
                 </Button>
               </motion.div>
             </label>
-            {demandFile && (
-              <Typography variant="subtitle1" gutterBottom>
-                Selected file: {demandFile.name}
-              </Typography>
-            )}
+            {demandFile && <Typography variant="subtitle1" gutterBottom>Selected file: {demandFile.name}</Typography>}
           </div>
 
           {/* Cost File Input */}
           <div style={{ marginTop: 20 }}>
-            <input
-              accept=".xlsx, .xls, .csv"
-              style={{ display: 'none' }}
-              id="cost-file"
-              type="file"
-              onChange={handleCostFileChange}
-            />
+            <input accept=".csv" style={{ display: 'none' }} id="cost-file" type="file" onChange={handleFileChange(setCostFile)} />
             <label htmlFor="cost-file">
               <motion.div whileHover={{ scale: 1.10 }} style={{ display: 'inline-block', width: '100%' }}>
                 <Button
@@ -177,27 +161,18 @@ function Upload({ onScheduleUpdate }) {
                     width: '65%',
                     border: '1.5px solid #FFFFFF',
                     borderRadius: '15px'
-                  }}>
+                  }}
+                >
                   Choose Worker Cost File
                 </Button>
               </motion.div>
             </label>
-            {costFile && (
-              <Typography variant="subtitle1" gutterBottom>
-                Selected file: {costFile.name}
-              </Typography>
-            )}
+            {costFile && <Typography variant="subtitle1" gutterBottom>Selected file: {costFile.name}</Typography>}
           </div>
 
           {/* Workers File Input */}
           <div style={{ marginTop: 20 }}>
-            <input
-              accept=".xlsx, .xls, .csv"
-              style={{ display: 'none' }}
-              id="workers-file"
-              type="file"
-              onChange={handleWorkersFileChange}
-            />
+            <input accept=".csv" style={{ display: 'none' }} id="workers-file" type="file" onChange={handleFileChange(setWorkersFile)} />
             <label htmlFor="workers-file">
               <motion.div whileHover={{ scale: 1.10 }} style={{ display: 'inline-block', width: '100%' }}>
                 <Button
@@ -212,16 +187,13 @@ function Upload({ onScheduleUpdate }) {
                     width: '65%',
                     border: '1.5px solid #FFFFFF',
                     borderRadius: '15px'
-                  }}>
+                  }}
+                >
                   Choose Workers List File
                 </Button>
               </motion.div>
             </label>
-            {workersFile && (
-              <Typography variant="subtitle1" gutterBottom>
-                Selected file: {workersFile.name}
-              </Typography>
-            )}
+            {workersFile && <Typography variant="subtitle1" gutterBottom>Selected file: {workersFile.name}</Typography>}
           </div>
 
           {/* Upload Button */}
@@ -240,14 +212,16 @@ function Upload({ onScheduleUpdate }) {
                 marginTop: '20px',
                 border: '1.5px solid #FFFFFF',
                 borderRadius: '15px'
-              }}>
+              }}
+            >
               Upload All
             </Button>
           </motion.div>
           {uploading && <LinearProgress style={{ marginTop: 10 }} />}
+          {error && <Typography color="error" style={{ marginTop: 10 }}>{error}</Typography>}
         </motion.div>
       </Container>
-    </motion.div >
+    </motion.div>
   );
 }
 
