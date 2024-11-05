@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Container, Typography, Button, LinearProgress } from '@mui/material';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+
 
 function Upload({ onScheduleUpdate }) {
   const [demandFile, setDemandFile] = useState(null);
@@ -11,6 +12,12 @@ function Upload({ onScheduleUpdate }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Extract username from the URL query parameters
+  const queryParams = new URLSearchParams(location.search);
+  const username = queryParams.get('username'); // Extracts 'username' from URL
+
 
   const requiredHeaders = {
     demandFile: ['Date', 'Time Interval', 'Worker Type', 'Demand'],
@@ -69,15 +76,17 @@ function Upload({ onScheduleUpdate }) {
       formData.append('demandFile', demandFile);
       formData.append('costFile', costFile);
       formData.append('workersFile', workersFile);
+      formData.append('username', username);
 
       const res = await axios.post('http://localhost:5000/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
       onScheduleUpdate(res.data.schedule);
-      navigate('/schedule');
+        navigate('/schedule', { state: { schedule: res.data.schedule } });
     } catch (validationError) {
-      setError(validationError);
+
+      setError(error.response?.data?.message || error.message || "An unexpected error occurred.");;
     } finally {
       setUploading(false);
     }
