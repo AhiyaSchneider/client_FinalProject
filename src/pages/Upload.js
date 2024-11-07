@@ -27,7 +27,7 @@ function Upload({ onScheduleUpdate }) {
 
   const handleFileChange = (setter) => (event) => {
     const file = event.target.files[0];
-    if (file && file.type !== 'text/csv') {
+    if (file && !file.name.endsWith('.csv')) {
       setError(`Please upload a CSV file.`);
       setter(null);
     } else {
@@ -83,7 +83,7 @@ function Upload({ onScheduleUpdate }) {
       });
 
       onScheduleUpdate(res.data.schedule);
-        navigate('/schedule', { state: { schedule: res.data.schedule } });
+      navigate('/schedule', { state: { schedule: res.data.schedule } });
     } catch (validationError) {
 
       setError(error.response?.data?.message || error.message || "An unexpected error occurred.");;
