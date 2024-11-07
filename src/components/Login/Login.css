@@ -47,6 +47,7 @@ h1 {
   padding-top: '2rem';
   padding-bottom: '2rem';
   overflow: 'hidden';
+  text-align: center;
 }
 
 .login-link {
