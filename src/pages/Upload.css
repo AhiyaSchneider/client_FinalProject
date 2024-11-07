@@ -6,3 +6,71 @@ body {
   overflow-x: hidden;
   /* Prevents any horizontal scroll if background extends */
 }
+
+.background-animate {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(-45deg, #FF5733, #C70039, #900C3F, #581845);
+  background-size: 400%, 400%;
+  z-index: -1;
+}
+
+.content-container {
+  min-width: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.motion-container {
+  width: 70%;
+  padding-top: '2rem';
+  padding-bottom: '2rem';
+  overflow: 'hidden';
+}
+
+.upload-title {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 700 !important;
+  padding-bottom: 20px !important;
+  color: #FFFFFF;
+}
+
+.hidden-input {
+  display: none;
+}
+
+.hover-effect {
+  display: inline-block;
+  width: 100%;
+}
+
+.upload-file-btn {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 500 !important;
+  color: #FFFFFF !important;
+  text-transform: none !important;
+  width: 65%;
+  border: 1.5px solid #FFFFFF !important;
+  border-radius: 15px !important;
+  transition: background-color 0.5s ease, color 0.5s ease !important;
+}
+
+.upload-all-btn {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 500 !important;
+  color: #FFFFFF !important;
+  text-transform: none !important;
+  width: 40% !important;
+  margin-top: 20px !important;
+  border: 1.5px solid #FFFFFF !important;
+  border-radius: 15px !important;
+}

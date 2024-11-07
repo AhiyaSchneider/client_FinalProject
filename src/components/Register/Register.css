@@ -1,152 +1,153 @@
 body {
-    background-color: #f9f9f9;
-    font-family: Arial, sans-serif;
-    padding-top: 2%;
+  background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
+  padding-top: 2%;
 }
 
-.background-shape {
-    width: auto;
+.background-animate-register {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(-45deg, #FF5733, #C70039, #900C3F, #581845);
+  background-size: 400%, 400%;
+  z-index: -1;
 }
 
 .reg-container {
-    margin: 0 auto;
-    overflow-y: auto;
-    max-width: 500px;
-    max-height: 1000px; /* adjust as needed */
-    background-color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  margin: 0 auto;
+  overflow-y: auto;
+  max-width: 500px;
+  max-height: 1000px;
+  /* adjust as needed */
+  background-color: transparent;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
-.reg-container::-webkit-scrollbar {
-    width: 0.5em;
-    height: 0.5em;
-}
-  
-.reg-container::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 2px;
-}
-  
-.reg-container::-webkit-scrollbar-track {
-    background-color: #f9f9f9;
-}
-  h1 {
-    text-align: center;
-    color: #007bff;
-    margin-bottom: 30px;
-  }
-  
-  form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .form-group {
-    margin-bottom: 20px;
-  }
-  
-  label {
-    display: block;
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #555;
-  }
-  
-  input[type="text"],
-  input[type="password"],
-  
-  button[type="submit"] {
-    display: block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: #fff;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  button[type="submit"]:hover {
-    background-color: #0069d9;
-  }
-  
-  .login-link {
-    text-align: center;
-    margin-top: 30px;
-  }
-  
-  .login-link a {
-    color: #007bff;
-    text-decoration: none;
-  }
-  
-  .login-link a:hover {
-    text-decoration: underline;
-  }
 
-  .left-bottom {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-  }
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  input[type="text"], input[type="password"] {
-    background-color: #cef1f5;
-  }
+.form-group {
+  margin-bottom: 20px;
+}
 
-  .password-help {
-    position: relative;
-  }
-  
-  .help-icon {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .help-text {
-    position: absolute;
-    top: 30px;
-    left: 0;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    padding: 10px;
-    display: none;
-  }
-  
-  .password-help:hover .help-text {
-    display: block;
-  }
-  .password-help {
-    position: relative;
-  }
-  
-  .help-icon {
-    width: 20px;
-    height: 20px;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-  }
-  
-  .help-text {
-    position: absolute;
-    top: 30px;
-    right: -110px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    padding: 10px;
-    display: none;
-  }
-  
-  .password-help:hover .help-text {
-    display: block;
-  }
-  
+label {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+input[type="text"],
+input[type="password"],
+
+button[type="submit"] {
+  display: block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #0069d9;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 20px !important;
+}
+
+.login-link a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+.left-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+input[type="text"],
+input[type="password"] {
+  background-color: #cef1f5;
+}
+
+.password-help {
+  position: relative;
+}
+
+.help-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.help-text {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  display: none;
+}
+
+.password-help:hover .help-text {
+  display: block;
+}
+
+.password-help {
+  position: relative;
+}
+
+.help-icon {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.help-text {
+  position: absolute;
+  top: 30px;
+  right: -110px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  display: none;
+}
+
+.password-help:hover .help-text {
+  display: block;
+}
+
+.register-btn {
+  font-family: 'Poppins', sans-serif;
+  background-color: transparent !important;
+  border: 1.5px solid #FFFFFF !important;
+  border-radius: 15px !important;
+}

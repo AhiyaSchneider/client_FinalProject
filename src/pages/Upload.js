@@ -3,6 +3,7 @@ import { Container, Typography, Button, LinearProgress } from '@mui/material';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import './Upload.css';
 
 
 function Upload({ onScheduleUpdate }) {
@@ -27,7 +28,7 @@ function Upload({ onScheduleUpdate }) {
 
   const handleFileChange = (setter) => (event) => {
     const file = event.target.files[0];
-    if (file && file.type !== 'text/csv') {
+    if (file && !file.name.endsWith('.csv')) {
       setError(`Please upload a CSV file.`);
       setter(null);
     } else {
@@ -83,7 +84,7 @@ function Upload({ onScheduleUpdate }) {
       });
 
       onScheduleUpdate(res.data.schedule);
-        navigate('/schedule', { state: { schedule: res.data.schedule } });
+      navigate('/schedule', { state: { schedule: res.data.schedule } });
     } catch (validationError) {
 
       setError(error.response?.data?.message || error.message || "An unexpected error occurred.");;
@@ -101,50 +102,30 @@ function Upload({ onScheduleUpdate }) {
         ease: 'easeInOut',
         repeat: Infinity,
       }}
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        background: 'linear-gradient(-45deg, #FF5733, #C70039, #900C3F, #581845)',
-        backgroundSize: '400% 400%',
-        zIndex: -1,
-      }}
+      className='background-animate'
     >
-      <Container maxWidth="sm" style={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', textAlign: 'center' }}>
+      <Container maxWidth="sm" className='content-container'>
         <motion.div
           id='motion-container-outer'
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          style={{ width: '70%', paddingTop: '2rem', paddingBottom: '2rem', overflow: 'hidden' }}
+          className='motion-container'
         >
-          <Typography variant="h4" gutterBottom style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 700, paddingBottom: 20, color: '#FFFFFF' }}>
+          <Typography variant="h4" gutterBottom className='upload-title'>
             Upload Files
           </Typography>
 
           {/* Demand File Input */}
           <div>
-            <input accept=".csv" style={{ display: 'none' }} id="demand-file" type="file" onChange={handleFileChange(setDemandFile)} />
+            <input accept=".csv" className='hidden-input' id="demand-file" type="file" onChange={handleFileChange(setDemandFile)} />
             <label htmlFor="demand-file">
-              <motion.div whileHover={{ scale: 1.10 }} style={{ display: 'inline-block', width: '100%' }}>
+              <motion.div className='hover-effect' whileHover={{ scale: 1.10 }}>
                 <Button
                   variant="contained"
                   color="transparent"
                   component="span"
-                  style={{
-                    fontFamily: 'Poppins, sans-serif',
-                    fontWeight: 500,
-                    color: '#FFFFFF',
-                    textTransform: 'none',
-                    width: '65%',
-                    border: '1.5px solid #FFFFFF',
-                    borderRadius: '15px'
-                  }}
+                  className='upload-file-btn'
                 >
                   Choose Demand Data File
                 </Button>
@@ -155,22 +136,14 @@ function Upload({ onScheduleUpdate }) {
 
           {/* Cost File Input */}
           <div style={{ marginTop: 20 }}>
-            <input accept=".csv" style={{ display: 'none' }} id="cost-file" type="file" onChange={handleFileChange(setCostFile)} />
+            <input accept=".csv" className='hidden-input' id="cost-file" type="file" onChange={handleFileChange(setCostFile)} />
             <label htmlFor="cost-file">
-              <motion.div whileHover={{ scale: 1.10 }} style={{ display: 'inline-block', width: '100%' }}>
+              <motion.div className='hover-effect' whileHover={{ scale: 1.10 }}>
                 <Button
                   variant="contained"
                   color="transparent"
                   component="span"
-                  style={{
-                    fontFamily: 'Poppins, sans-serif',
-                    fontWeight: 500,
-                    color: '#FFFFFF',
-                    textTransform: 'none',
-                    width: '65%',
-                    border: '1.5px solid #FFFFFF',
-                    borderRadius: '15px'
-                  }}
+                  className='upload-file-btn'
                 >
                   Choose Worker Cost File
                 </Button>
@@ -181,22 +154,14 @@ function Upload({ onScheduleUpdate }) {
 
           {/* Workers File Input */}
           <div style={{ marginTop: 20 }}>
-            <input accept=".csv" style={{ display: 'none' }} id="workers-file" type="file" onChange={handleFileChange(setWorkersFile)} />
+            <input accept=".csv" className='hidden-input' id="workers-file" type="file" onChange={handleFileChange(setWorkersFile)} />
             <label htmlFor="workers-file">
-              <motion.div whileHover={{ scale: 1.10 }} style={{ display: 'inline-block', width: '100%' }}>
+              <motion.div className='hover-effect' whileHover={{ scale: 1.10 }}>
                 <Button
                   variant="contained"
                   color="transparent"
                   component="span"
-                  style={{
-                    fontFamily: 'Poppins, sans-serif',
-                    fontWeight: 500,
-                    color: '#FFFFFF',
-                    textTransform: 'none',
-                    width: '65%',
-                    border: '1.5px solid #FFFFFF',
-                    borderRadius: '15px'
-                  }}
+                  className='upload-file-btn'
                 >
                   Choose Workers List File
                 </Button>
@@ -206,22 +171,13 @@ function Upload({ onScheduleUpdate }) {
           </div>
 
           {/* Upload Button */}
-          <motion.div whileHover={{ scale: 1.10 }} style={{ display: 'inline-block', width: '100%' }}>
+          <motion.div className='hover-effect' whileHover={{ scale: 1.10 }}>
             <Button
               variant="contained"
               color="transparent"
               onClick={handleUpload}
               disabled={uploading}
-              style={{
-                fontFamily: 'Poppins, sans-serif',
-                fontWeight: 500,
-                color: '#FFFFFF',
-                textTransform: 'none',
-                width: '40%',
-                marginTop: '20px',
-                border: '1.5px solid #FFFFFF',
-                borderRadius: '15px'
-              }}
+              className='upload-all-btn'
             >
               Upload All
             </Button>
