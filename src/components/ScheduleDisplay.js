@@ -45,22 +45,31 @@ const ScheduleDisplay = () => {
                     </thead>
                     <tbody>
                         {schedule.map((shift, idx) => (
-                            <tr key={idx}>
-                                <td style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>{shift.date}</td>
-                                <td style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>{shift.startTime}</td>
-                                <td style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>{shift.endTime}</td>
-                                <td style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>{shift.skill}</td>
-                                <td style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>
-                                    {shift.workers.map(worker => worker.workerName || worker.workerId).join(', ')}
-                                </td>
-                            </tr>
+                            <React.Fragment key={idx}>
+                                <tr>
+                                    <td style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>{shift.date}</td>
+                                    <td style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>{shift.startTime}</td>
+                                    <td style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>{shift.endTime}</td>
+                                    <td style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>{shift.skill}</td>
+                                    <td style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>
+                                        {shift.workers.map(worker => worker.workerName || worker.workerId).join(', ')}
+                                    </td>
+                                </tr>
+                                {shift.message && (
+                                    <tr>
+                                        <td colSpan="5" style={{ padding: '8px', color: '#FFD700', fontSize: '0.9rem', textAlign: 'left' }}>
+                                            <em>Note: {shift.message}</em>
+                                        </td>
+                                    </tr>
+                                )}
+                            </React.Fragment>
                         ))}
                     </tbody>
                 </table>
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => navigate(-1)} // Go back to the previous page
+                    onClick={() => navigate(-1)}
                     style={{
                         marginTop: '20px',
                         padding: '10px 20px',
@@ -75,6 +84,7 @@ const ScheduleDisplay = () => {
             </Container>
         </motion.div>
     );
+    
 };
 
 export default ScheduleDisplay;
