@@ -3,25 +3,20 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Button, Container, Typography, Menu, MenuItem } from '@mui/material';
 import { motion } from 'framer-motion';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 const ScheduleDisplay = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    //const schedule = location.state?.schedule || [];
 
-    const [schedule, setSchedule] = useState([]);
-    // Initialize the schedule with data from location.state
-    useEffect(() => {
-        if (location.state?.schedule) {
-            setSchedule(location.state.schedule);
-        }
-    }, [location.state]);
+    // Extract schedule and username from location.state
+    const [schedule, setSchedule] = useState(location.state?.schedule || []);
+    const [username, setUsername] = useState(location.state?.username || "");
 
     const [selectedFile, setSelectedFile] = useState(null);
-    const [fileType, setFileType] = useState(''); // State to hold the file type
-    const [anchorEl, setAnchorEl] = useState(null); // State for menu anchor
+    const [fileType, setFileType] = useState('');
+    const [anchorEl, setAnchorEl] = useState(null);
     const [error, setError] = useState('');
-
 
     const requiredHeaders = {
         demandFile: ['Date', 'Time Interval', 'Worker Type', 'Demand'],
@@ -34,7 +29,6 @@ const ScheduleDisplay = () => {
         const file = event.target.files[0];
         if (file) {
             setSelectedFile(file);
-            console.log("File selected:", file.name);
         }
     };
 
@@ -51,21 +45,18 @@ const ScheduleDisplay = () => {
     // Function to set file type and close the menu
     const setFileTypeAndClose = (type) => {
         setFileType(type);
-        console.log("File type set as:", type);
         handleMenuClose();
     };
 
-    // Function to handle file upload with validation
+    // Function to handle file upload with validation and token
     const handleFileUpload = async () => {
         if (!selectedFile || !fileType) {
             alert('Please select a file and determine the file type before uploading.');
             return;
         }
 
-        // Define the expected headers based on the chosen file type
         const expectedHeaders = requiredHeaders[fileType];
         if (!expectedHeaders) {
-            console.log("file type:", fileType);
             alert('Invalid file type selected.');
             return;
         }
@@ -73,25 +64,49 @@ const ScheduleDisplay = () => {
         // Validate the file structure
         try {
             await validateFileStructure(selectedFile, expectedHeaders);
-            setError(''); // Clear any previous errors
+            setError('');
 
             // If the file structure is valid, proceed with the upload
             const formData = new FormData();
             formData.append(fileType, selectedFile);
 
+            // Get the token from localStorage
+            const token = localStorage.getItem(username);
+            if (!token) {
+                alert('Authorization token is missing. Please log in again.');
+                return;
+            }
+            try {
+                const decodedToken = jwtDecode(token);
+                const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+
+                if (decodedToken.exp < currentTime) {
+                    // Token has expired
+                    alert("Session expired. Please log in again.");
+                    navigate('/');
+                    return;
+                }
+            } catch (err) {
+                console.error("Error decoding token:", err);
+                alert("Invalid token. Please log in again.");
+                navigate('/');
+                return;
+            }
+
             // Make the POST request to the server
             const response = await axios.post('http://localhost:5000/api/upload', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}` // Add the token to the Authorization header
+                }
             });
 
             // Handle the response
-            console.log('File uploaded successfully:', response.data);
             if (response.data.schedule) {
                 setSchedule(response.data.schedule); // Update the schedule state with the new data
             }
         } catch (error) {
-            console.error('Validation error:', error);
-            setError(error); // Display the error message
+            setError(error.response?.data?.message || error.message || "An unexpected error occurred.");
         }
     };
 
@@ -104,12 +119,10 @@ const ScheduleDisplay = () => {
                 const lines = text.split('\n');
                 const headers = lines[0].split(',').map(header => header.trim());
 
-                // Check for missing headers
                 const missingHeaders = expectedHeaders.filter(header => !headers.includes(header));
                 if (missingHeaders.length > 0) {
-                    const errorMessage = `The file is missing the following columns: ${missingHeaders.join(', ')}`
-                    alert("the file isn't matching");
-                    setError(errorMessage); // Set the error state to notify the user
+                    const errorMessage = `The file is missing the following columns: ${missingHeaders.join(', ')}`;
+                    setError(errorMessage);
                     reject(errorMessage);
                 } else {
                     setError('');
@@ -120,7 +133,6 @@ const ScheduleDisplay = () => {
             reader.readAsText(file);
         });
     };
-
 
     return (
         <motion.div

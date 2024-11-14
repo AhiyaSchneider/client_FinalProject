@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import './Upload.css';
+import { jwtDecode } from 'jwt-decode';
+
 
 
 function Upload({ onScheduleUpdate }) {
@@ -57,41 +59,63 @@ function Upload({ onScheduleUpdate }) {
     });
   };
 
-  const handleUpload = async () => {
-    if (!demandFile || !costFile || !workersFile) {
-      setError('Please select all three files to upload.');
-      return;
-    }
+    const handleUpload = async () => {
+        if (!demandFile || !costFile || !workersFile) {
+            setError('Please select all three files to upload.');
+            return;
+        }
 
-    try {
-      await Promise.all([
-        validateFileStructure(demandFile, requiredHeaders.demandFile, 'Demand Data'),
-        validateFileStructure(costFile, requiredHeaders.costFile, 'Cost Data'),
-        validateFileStructure(workersFile, requiredHeaders.workersFile, 'Workers List')
-      ]);
+        try {
+            await Promise.all([
+                validateFileStructure(demandFile, requiredHeaders.demandFile, 'Demand Data'),
+                validateFileStructure(costFile, requiredHeaders.costFile, 'Cost Data'),
+                validateFileStructure(workersFile, requiredHeaders.workersFile, 'Workers List')
+            ]);
 
-      setUploading(true);
-      setError('');
+            setUploading(true);
+            setError('');
 
-      const formData = new FormData();
-      formData.append('demandFile', demandFile);
-      formData.append('costFile', costFile);
-      formData.append('workersFile', workersFile);
-      formData.append('username', username);
+            const formData = new FormData();
+            formData.append('demandFile', demandFile);
+            formData.append('costFile', costFile);
+            formData.append('workersFile', workersFile);
+            formData.append('username', username);
 
-      const res = await axios.post('http://localhost:5000/api/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+            // Get the token from localStorage
+            const token = localStorage.getItem(username);
+            // Check if the token has expired
+            try {
+                const decodedToken = jwtDecode(token);
+                const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
 
-      onScheduleUpdate(res.data.schedule);
-      navigate('/schedule', { state: { schedule: res.data.schedule } });
-    } catch (validationError) {
+                if (decodedToken.exp < currentTime) {
+                    // Token has expired
+                    alert("Session expired. Please log in again.");
+                    navigate('/');
+                    return;
+                }
+            } catch (err) {
+                console.error("Error decoding token:", err);
+                alert("Invalid token. Please log in again.");
+                navigate('/');
+                return;
+            }
 
-      setError(error.response?.data?.message || error.message || "An unexpected error occurred.");;
-    } finally {
-      setUploading(false);
-    }
-  };
+            const res = await axios.post('http://localhost:5000/api/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`, // Add the token to the Authorization header
+                },
+            });
+
+            onScheduleUpdate(res.data.schedule);
+            navigate('/schedule', { state: { schedule: res.data.schedule, username } });
+        } catch (error) {
+            setError(error.response?.data?.message || error.message || "An unexpected error occurred.");
+        } finally {
+            setUploading(false);
+        }
+    };
 
   return (
     <motion.div
