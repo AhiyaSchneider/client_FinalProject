@@ -155,11 +155,11 @@ const ScheduleDisplay = () => {
             initial={{ backgroundPosition: '0% 50%' }}
             animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
             transition={{ duration: 10, ease: 'easeInOut', repeat: Infinity }}>
-                <Typography variant="h4" gutterBottom>Schedule Overview</Typography>
+                <motion.h1 className='sch-title'>Schedule Overview</motion.h1>
                 <motion.div className='filter-container'>
-                    <motion.label htmlFor='worker-filter' className='filter-label'>
+                    {/* <motion.label htmlFor='worker-filter' className='filter-label'>
                         Filter by worker
-                    </motion.label>
+                    </motion.label> */}
                     <motion.input
                         id='worker-filter'
                         className='filter-input'
@@ -167,11 +167,20 @@ const ScheduleDisplay = () => {
                         type='text'
                         value={workerFilter}
                         onChange={(e) => setWorkerFilter(e.target.value)}
-                        placeholder='Enter Worker Name'>
+                        placeholder='Filter by worker name'
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                        transition={{ duration: 0.6, ease: 'easeInOut' }}>
 
                     </motion.input>
                 </motion.div>
-                <motion.table className="schedule-table">
+                <motion.table 
+                    className="schedule-table"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ duration: 0.6, ease: 'easeInOut' }}>
                     <motion.thead>
                         <motion.tr>
                             <motion.th>Date</motion.th>
@@ -188,7 +197,11 @@ const ScheduleDisplay = () => {
                                 {/* Main shift row */}
                                 <motion.tr
                                     className={`shift-row ${shift.message ? 'has-warning' : ''}`}
-                                    onClick={() => toggleRow(idx)}>
+                                    onClick={() => toggleRow(idx)}
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: 20 }}
+                                    transition={{ duration: 0.6, ease: 'easeInOut' }}>
                                         <motion.td>{shift.date}</motion.td>
                                         <motion.td>{shift.startTime}</motion.td>
                                         <motion.td>{shift.endTime}</motion.td>
@@ -214,8 +227,14 @@ const ScheduleDisplay = () => {
                 </motion.table>
 
                 {/* Container for the buttons */}
-                <motion.div className='sch-prime-btn-container'>
-                    <motion.div className='sch-choose-file-btn'>
+                <motion.div 
+                    className='sch-prime-btn-container'
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ duration: 0.6, ease: 'easeInOut' }}>
+                    {/* Button to choose file */}
+                    <motion.div className='sch-btn-wrapper'>
                         <input
                             type="file"
                             accept=".csv"
@@ -225,7 +244,11 @@ const ScheduleDisplay = () => {
                         />
                         <label htmlFor="file-upload-input">
                             <motion.div className='sch-hover-effect' whileHover={{ scale: 1.10}}>
-                                <Button variant="contained" color="primary" component="span">
+                                <Button 
+                                    className='sch-btn' 
+                                    variant="contained" 
+                                    color="primary" 
+                                    component="span">
                                     Choose File
                                 </Button>
                             </motion.div>
@@ -233,10 +256,14 @@ const ScheduleDisplay = () => {
                     </motion.div>
 
                     {/* Button to open the menu for choosing file type */}
-                    <motion.div className='sch-file-type-btn'>
+                    <motion.div className='sch-btn-wrapper'>
                         <motion.div className='sch-hover-effect' whileHover={{scale: 1.10}}>
-                            <Button variant="contained" color="info" onClick={handleMenuClick}>
-                                Select File Type
+                            <Button
+                                className='sch-btn'
+                                variant="contained" 
+                                color="info" 
+                                onClick={handleMenuClick}>
+                                    Select File Type
                             </Button>
                         </motion.div>
                         <Menu
@@ -250,20 +277,23 @@ const ScheduleDisplay = () => {
                     </motion.div>
 
                     {/* Button to upload the file */}
-                    <motion.div className='sch-hover-effect' whileHover={{scale: 1.10}}>
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            onClick={handleFileUpload}>
-                            Upload File
-                        </Button>
+                    <motion.div className='sch-btn-wrapper'>
+                        <motion.div className='sch-hover-effect' whileHover={{scale: 1.10}}>
+                            <Button
+                                className='sch-btn'
+                                variant="contained"
+                                color="secondary"
+                                onClick={handleFileUpload}>
+                                Upload File
+                            </Button>
+                        </motion.div>
                     </motion.div>
-                    
                 </motion.div>
 
                 {/* Return Button */}
                 <motion.div className='sch-hover-effect' whileHover={{scale: 1.10}}>
                     <Button
+                        className='sch-btn'
                         variant="contained"
                         color="default"
                         onClick={() => navigate(-1)}

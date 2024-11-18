@@ -7,96 +7,116 @@ body {
     background-color: #ecf7fc;
 }
 
+.schedule-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Full viewport height */
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(135deg, #07185a, #0096d6); /* Gradient background */
+    color: #ecf7fc; /* Light text for contrast */
+    font-family: 'Poppins', sans-serif;
+}
+
+.filter-container {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #ecf7fc;
+}
+
+.filter-label {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.filter-input {
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border: 1px solid #c8ccdb;
+    border-radius: 15px;
+    outline: none;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    background-color: #ecf7fc; /* Light background */
+    color: #07185a; /* Dark text for contrast */
+}
+
+.filter-input:focus {
+    border-color: #0096d6;
+  background-color: #ffffff; /* White on focus */
+}
+
 .schedule-table {
     width: 90%;
+    max-width: 800px;
+    margin: 20px 0;
     border-collapse: separate;
     border-spacing: 0;
-    margin-top: 20px;
-    margin: 20px;
-    font-family: 'Poppins', sans-serif;
-    color: #ffffff;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    border-radius: 8px;
-    overflow: hidden; /* Ensure rounded corners are applied */
-    text-align: left;
+    background-color: #07185a; /* Dark background */
+    border-radius: 10px;
+    overflow: hidden
 }
 
 .schedule-table th {
-    background-color: #07185a; /* Darker background for headers */
-    color: #ecf7fc; /* Light text color */
+    background-color: #0096d6;
+    color: #ecf7fc;
+    padding: 12px;
+    text-align: left;
     font-size: 1rem;
-    font-weight: bold;
-    padding: 10px;
-    border-bottom: 2px solid #c8ccdb; /* Subtle border */
 }
 
 .schedule-table td {
-    padding: 12px;
-    font-size: 0.9rem;
-    border-bottom: 1px solid #c8ccdb;
-}
-
-.schedule-table tbody tr:nth-child(odd) {
-    background-color: rgba(255, 255, 255, 0.1); /* Subtle stripe */
-}
-
-.schedule-table tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.2); /* Highlight row */
-}
-
-.schedule-table .schedule-note td {
-    font-style: italic;
-    color: #ffd700; /* Gold for emphasis */
-    background-color: rgba(0, 0, 0, 0.6); /* Darker background */
     padding: 10px;
-}
-
-.has-warning {
-    background-color: rgba(255, 165, 0, 0.1) !important; /* Light orange background */
-    cursor: pointer; /* Indicate interactivity */
-    transition: background-color 0.3s ease;
-}
-
-.has-warning:hover {
-    background-color: rgba(255, 165, 0, 0.2) !important; /* Darker on hover */
-}
-
-.message-row {
-    background-color: rgba(0, 0, 0, 0.05); /* Subtle contrast */
-    color: #555; /* Neutral text color */
     font-size: 0.9rem;
-    font-style: italic;
-    padding: 10px;
+    color: #ecf7fc;
+}
+
+.shift-row {
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.1); /* Subtle row background */
+}
+
+.shift-row:hover {
+    background-color: rgba(0, 150, 214, 0.2); /* Highlight on hover */
 }
 
 .message-row td {
     padding: 10px 15px;
-    border-top: 1px solid #ddd;
+    background-color: rgba(0, 0, 0, 0.3); /* Slightly darker for message */
+    color: #ffcc00; /* Gold for warning message */
 }
 
-.filter-container {
+.sch-prime-btn-container {
     display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
 }
 
-.filter-label {
-    font-size: 1rem;
-    color: #07185a; /* Primary text color */
-    font-weight: bold;
-  }
-  
-  .filter-input {
-    flex: 1;
-    padding: 8px 12px;
-    font-size: 0.9rem;
-    border: 1px solid #c8ccdb; /* Light border */
-    border-radius: 5px;
-    outline: none;
-    transition: border-color 0.3s ease;
-  }
-  
-  .filter-input:focus {
-    border-color: #0096d6; /* Primary highlight color */
-  }
+.sch-btn {
+    font-family: 'Poppins', sans-serif !important;
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    margin: 1rem 0;
+    border: none;
+    border-radius: 15px !important;
+    background-color: #ffffff !important;
+    color: #07185a !important;
+    font-weight: bold !important;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-transform: none !important;
+}
+
+.sch-btn:hover {
+    background-color: #07185a !important;
+    color: #ffffff !important;
+}
