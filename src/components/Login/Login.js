@@ -47,13 +47,13 @@ function Login() {
 
     return (
         <motion.div
-            className="background"
+            className="login-background"
             initial={{ backgroundPosition: "0% 50%" }}
             animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
             transition={{ duration: 10, ease: "easeInOut" }}>
             
             <motion.div
-                className="container"
+                className="login-container"
                 initial={{ opacity: 0, y: -50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}>
