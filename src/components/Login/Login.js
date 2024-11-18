@@ -59,6 +59,7 @@ function Login() {
                 transition={{ duration: 0.6 }}>
             
                 <motion.h1
+                    className="login-h1"
                     initial={{ opacity: 0, scale: 0.8}}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5, delay: 0.3 }}>
@@ -66,13 +67,14 @@ function Login() {
                 </motion.h1>
 
                 <motion.form 
+                    className="login-form"
                     onSubmit={handleLogin}
                     initial={{ opacity: 0, x: -50 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, delay: 0.5 }}>
                     
                     <motion.input
-                        className="input-bar"
+                        className="login-input-bar"
                         type="text"
                         placeholder="Username"
                         value={username}
@@ -82,7 +84,7 @@ function Login() {
                         required />
                     
                     <motion.input
-                        className="input-bar"
+                        className="login-input-bar"
                         type="password"
                         placeholder="Password"
                         value={password}

@@ -4,6 +4,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { ReactComponent as InfoIcon } from '../../info-circle-svgrepo-com.svg'
 
 function Register() {
   const [username, setUsername] = useState('');
@@ -94,87 +95,102 @@ function Register() {
 
   return (
     <motion.div
+      className='register-background'
       initial={{ backgroundPosition: '0% 50%' }}
       animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
-      transition={{
-        duration: 10,
-        ease: 'easeInOut',
-        repeat: Infinity,
-      }}
-      className='background-animate-register'
-    >
-      <div>
-        <div className="reg-container">
-          <h1>
-            Welcome!
-            <br />
-            Please register
-          </h1>
-          <form onSubmit={handleSubmit}>
+      transition={{ duration: 10, ease: 'easeInOut', repeat: Infinity }}>
 
-            <div className="form-group">
-              <input type="text"
-                id="username"
-                name="username"
-                className='input-bar'
-                required value={username}
-                onChange={handleChange}
-                placeholder='Username' />
-            </div>
+        <motion.div
+          className='register-container'
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}>
+            
+            
+            <motion.h1
+              className='register-h1'
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}>
+                Welcome!<br />Please Register
+            </motion.h1>
 
-            <div className="form-group">
-              {/* <div class="password-help">
-                <img class="help-icon" src="help.png" alt="Password requirements" />
-                <div class="help-text">
-                  Password must be at least 8 characters long and contain at least one letter and one number.
-                </div>
-              </div> */}
-              <input
-                type="password"
-                id="password"
-                name="password"
-                className='input-bar'
-                required value={password}
-                onChange={handleChange}
-                placeholder='Password'
-              />
-            </div>
+            <motion.form
+              className='register-form'
+              onSubmit={handleSubmit}
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              >
+                <motion.div className='register-input-container'>
+                  <motion.input
+                    className="register-input-bar"
+                    type="text"
+                    name="username"
+                    placeholder="Username"
+                    value={username}
+                    onChange={handleChange}
+                    whileFocus={{ scale: 1.05, borderColor: "#0096d6" }}
+                    transition={{ duration: 0.3 }}
+                    required />
+                </motion.div>
 
-            <div className="form-group">
-              {/* <div class="password-help">
-                <img class="help-icon" src="help.png" alt="Password requirements" />
-                <div class="help-text">
-                  Password must be at least 8 characters long and contain at least one letter and one number.
-                </div>
-              </div> */}
+                
 
-              <input
-                type="password"
-                id="confirm-password"
-                name="confirmPassword"
-                className='input-bar'
-                required value={confirmPassword}
-                onChange={handleChange}
-                placeholder='Confirm Password'
-              />
-            </div>
+                <motion.div className='register-input-container'>
+                  <motion.input
+                    className="register-input-bar"
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={handleChange}
+                    whileFocus={{ scale: 1.05, borderColor: "#0096d6" }}
+                    transition={{ duration: 0.3 }}
+                    required />
 
-            <motion.div whileHover={{ scale: 1.10 }}>
-              <button type="submit" className='register-btn '>
-                Submit
-              </button>
-            </motion.div>
-          </form>
-          <div className="login-link">
-            <p>Already registered? <Link to="/">Click here</Link> to log in</p>
-          </div>
-          <div className="left-bottom">
+                  <motion.div className='register-icon-container'>
+                    <InfoIcon className='register-info-ico'/>
+                    <motion.div className='register-popover'>
+                      Password must be at least 8 characters long and contain at least one letter and one number.
+                    </motion.div>
+                  </motion.div>
+                </motion.div>
 
+                <motion.div className='register-input-container'>
+                  <motion.input
+                    className='register-input-bar'
+                    type='password'
+                    name="confirmPassword"
+                    placeholder='Confirm Password'
+                    value={confirmPassword}
+                    onChange={handleChange} />
 
-            <img src="/logo.png" alt="logo" width="100" height="75" style={{ marginRight: '2px', borderRadius: '0%' }} />
-          </div>
-        </div>
-      </div>
+                  <motion.div className='register-icon-container'>
+                    <InfoIcon className='register-info-ico'/>
+                    <motion.div className='register-popover'>
+                      Password must be at least 8 characters long and contain at least one letter and one number.
+                    </motion.div>
+                  </motion.div>
+                </motion.div>
+                
+
+                <motion.button
+                  className="register-btn"
+                  type="submit"
+                  whileHover={{ scale: 1.05, backgroundColor: "#007bb5" }}
+                  whileTap={{ scale: 0.95 }}>
+                    Register
+                  </motion.button>
+
+              </motion.form>
+
+              <motion.p className='login-link'>
+                Already registered? <Link to='/'>Click here</Link> to login
+              </motion.p>
+
+        </motion.div>
+      
     </motion.div>
   );
 }
