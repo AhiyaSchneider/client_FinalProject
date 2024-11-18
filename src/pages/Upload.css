@@ -113,3 +113,16 @@ body {
   color: #ffffff; /* Text color for contrast */
   z-index: 1; /* Ensure it appears above the progress bar */
 }
+
+.upload-btn-wrapper {
+  margin-top: 20px;
+  text-align: center;
+  position: relative;
+}
+.error-msg {
+  font-family: 'Poppins', sans-serif !important; 
+  margin-top: 10px !important;
+  color: #ff1744; /* Error color */
+  font-size: 1rem;
+  font-weight: bold;
+}

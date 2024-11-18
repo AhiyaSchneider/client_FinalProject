@@ -217,17 +217,26 @@ function Upload({ onScheduleUpdate }) {
         <motion.div 
           className='upload-hover-effect'
           whileHover={{ scale: 1.10 }}>
-            <Button
-              className='upload-all-btn'
-              variant="contained"
-              color="transparent"
-              onClick={handleUpload}
-              disabled={uploading}>
-                Upload All
-            </Button>
+            <motion.div
+              className='upload-btn-wrapper'
+              whileHover={{ scale: 1.10 }}>
+                <Button
+                  className='upload-all-btn'
+                  variant="contained"
+                  color="transparent"
+                  onClick={handleUpload}
+                  disabled={uploading}>
+                    Upload All
+                </Button>
+                {error && (
+                  <Typography
+                    className='error-msg'
+                    variant='body2'>
+                      {error}
+                    </Typography>
+                )}
+              </motion.div>
         </motion.div>
-        {uploading && <LinearProgress />}
-        {error && <Typography color="error" style={{ marginTop: 10 }}>{error}</Typography>}
       </motion.div>
 </motion.div>
   );
