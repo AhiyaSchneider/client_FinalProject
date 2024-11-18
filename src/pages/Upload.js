@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Typography, Button, LinearProgress } from '@mui/material';
+import { Typography, Button, LinearProgress } from '@mui/material';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -12,6 +12,8 @@ function Upload({ onScheduleUpdate }) {
   const [demandFile, setDemandFile] = useState(null);
   const [costFile, setCostFile] = useState(null);
   const [workersFile, setWorkersFile] = useState(null);
+  const [selectedFilesCount, setSelectedFilesCount] = useState(0);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -35,9 +37,17 @@ function Upload({ onScheduleUpdate }) {
       setter(null);
     } else {
       setError('');
+      // Set the selected file
       setter(file);
+  
+      // Increment selected files count if it's a new selection
+      setSelectedFilesCount((prevCount) => {
+        const newCount = prevCount + 1;
+        setUploadProgress((newCount / 3) * 100); // Update progress for 3 files
+        return newCount;
+      });
     }
-  };
+  }
 
   const validateFileStructure = (file, expectedHeaders, fileName) => {
     return new Promise((resolve, reject) => {
@@ -95,6 +105,8 @@ function Upload({ onScheduleUpdate }) {
                     return;
                 }
             } catch (err) {
+              setSelectedFilesCount(0);
+              setUploadProgress(0);
                 console.error("Error decoding token:", err);
                 alert("Invalid token. Please log in again.");
                 navigate('/');
@@ -130,6 +142,18 @@ function Upload({ onScheduleUpdate }) {
         transition={{ duration: 0.6 }}>
         
         <motion.h1 className='upload-title'>Upload Files</motion.h1>
+
+        <motion.div className="upload-progress-container">
+          <LinearProgress
+            className="upload-progress-bar"
+            variant="determinate"
+            value={uploadProgress}/>
+          <Typography
+            className="upload-progress-text"
+            variant="body2">
+              {`${Math.round(uploadProgress)}%`}
+          </Typography>
+        </motion.div>
 
         <motion.div className='upload-input-wrapper'>
           <input 

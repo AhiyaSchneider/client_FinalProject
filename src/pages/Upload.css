@@ -81,3 +81,35 @@ body {
   color:#ffffff !important;
   background-color: #07185a;
 }
+
+.upload-progress-bar {
+  height: 20px !important; /* Increase height for better visibility */
+  border-radius: 5px; /* Smooth corners */
+  margin-bottom: 20px;
+  overflow: hidden;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+.upload-progress-bar .MuiLinearProgress-bar {
+  background: linear-gradient(90deg, #0096d6, #07185a); /* Gradient for progress fill */
+  border-radius: 5px; /* Smooth corners for the fill */
+  transition: width 0.3s ease-in-out; /* Smooth transition effect */
+}
+
+.upload-progress-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.upload-progress-text {
+  font-family: 'Poppins', sans-serif !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: bold;
+  font-size: 1rem !important;
+  color: #ffffff; /* Text color for contrast */
+  z-index: 1; /* Ensure it appears above the progress bar */
+}
