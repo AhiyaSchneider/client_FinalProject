@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Button, Container, Typography, Menu, MenuItem } from '@mui/material';
+import { Button, Typography, Menu, MenuItem } from '@mui/material';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import './ScheduleDisplay.css'
 
 const ScheduleDisplay = () => {
     const navigate = useNavigate();
@@ -17,6 +18,8 @@ const ScheduleDisplay = () => {
     const [fileType, setFileType] = useState('');
     const [anchorEl, setAnchorEl] = useState(null);
     const [error, setError] = useState('');
+    const [expandedRow, setExpandedRow] = useState(null);
+    const [workerFilter, setWorkerFilter] = useState("");
 
     const requiredHeaders = {
         demandFile: ['Date', 'Time Interval', 'Worker Type', 'Demand'],
@@ -134,114 +137,141 @@ const ScheduleDisplay = () => {
         });
     };
 
+    const toggleRow = (idx) => {
+        setExpandedRow((prev) => (prev === idx ? null : idx));
+    };
+
+    const filteredSchedule = schedule.filter((shift) =>
+        shift.workers.some((worker) =>
+        (worker.workerName || worker.workerId)
+            .toLowerCase()
+            .includes(workerFilter.toLowerCase())
+        )
+    );
+
     return (
         <motion.div
+            className='schedule-container'
             initial={{ backgroundPosition: '0% 50%' }}
             animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
-            transition={{
-                duration: 10,
-                ease: 'easeInOut',
-                repeat: Infinity,
-            }}
-            style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                background: 'linear-gradient(-45deg, #FF5733, #C70039, #900C3F, #581845)',
-                backgroundSize: '400% 400%',
-                zIndex: -1,
-            }}
-        >
-            <Container style={{ padding: '20px', textAlign: 'center', color: '#FFFFFF' }}>
+            transition={{ duration: 10, ease: 'easeInOut', repeat: Infinity }}>
                 <Typography variant="h4" gutterBottom>Schedule Overview</Typography>
-                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
-                    <thead>
-                        <tr>
-                            <th style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>Date</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>Start Time</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>End Time</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>Skill</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>Workers</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {schedule.map((shift, idx) => (
+                <motion.div className='filter-container'>
+                    <motion.label htmlFor='worker-filter' className='filter-label'>
+                        Filter by worker
+                    </motion.label>
+                    <motion.input
+                        id='worker-filter'
+                        className='filter-input'
+                        name='workerFilter'
+                        type='text'
+                        value={workerFilter}
+                        onChange={(e) => setWorkerFilter(e.target.value)}
+                        placeholder='Enter Worker Name'>
+
+                    </motion.input>
+                </motion.div>
+                <motion.table className="schedule-table">
+                    <motion.thead>
+                        <motion.tr>
+                            <motion.th>Date</motion.th>
+                            <motion.th>Start Time</motion.th>
+                            <motion.th>End Time</motion.th>
+                            <motion.th>Skill</motion.th>
+                            <motion.th>Workers</motion.th>
+                        </motion.tr>
+                    </motion.thead>
+
+                    <motion.tbody>
+                        {filteredSchedule.map((shift, idx) => (
                             <React.Fragment key={idx}>
-                                <tr>
-                                    <td style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>{shift.date}</td>
-                                    <td style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>{shift.startTime}</td>
-                                    <td style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>{shift.endTime}</td>
-                                    <td style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>{shift.skill}</td>
-                                    <td style={{ border: '1px solid #ddd', padding: '8px', color: '#FFFFFF' }}>
-                                        {shift.workers.map(worker => worker.workerName || worker.workerId).join(', ')}
-                                    </td>
-                                </tr>
-                                {shift.message && (
-                                    <tr>
-                                        <td colSpan="5" style={{ padding: '8px', color: '#FFD700', fontSize: '0.9rem', textAlign: 'left' }}>
-                                            <em>Note: {shift.message}</em>
-                                        </td>
-                                    </tr>
+                                {/* Main shift row */}
+                                <motion.tr
+                                    className={`shift-row ${shift.message ? 'has-warning' : ''}`}
+                                    onClick={() => toggleRow(idx)}>
+                                        <motion.td>{shift.date}</motion.td>
+                                        <motion.td>{shift.startTime}</motion.td>
+                                        <motion.td>{shift.endTime}</motion.td>
+                                        <motion.td>{shift.skill}</motion.td>
+                                    <motion.td>{shift.workers.map(worker => worker.workerName || worker.workerId).join(', ')}</motion.td>
+                                </motion.tr>
+                                {/* Message row (conditionally rendered) */}
+                                {expandedRow === idx && shift.message && (
+                                    <motion.tr 
+                                        className='message-row'
+                                        initial ={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: "auto" }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        transition={{ duration: 0.6 }}>
+                                            <motion.td colSpan="5">
+                                                <em>{shift.message}</em>
+                                            </motion.td>
+                                    </motion.tr>
                                 )}
                             </React.Fragment>
                         ))}
-                    </tbody>
-                </table>
+                    </motion.tbody>
+                </motion.table>
 
                 {/* Container for the buttons */}
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '20px' }}>
-                    <input
-                        type="file"
-                        accept=".csv"
-                        onChange={handleFileChange}
-                        style={{ display: 'none' }}
-                        id="file-upload-input"
-                    />
-                    <label htmlFor="file-upload-input">
-                        <Button variant="contained" color="primary" component="span">
-                            Choose File
-                        </Button>
-                    </label>
+                <motion.div className='sch-prime-btn-container'>
+                    <motion.div className='sch-choose-file-btn'>
+                        <input
+                            type="file"
+                            accept=".csv"
+                            onChange={handleFileChange}
+                            style={{ display: 'none' }}
+                            id="file-upload-input"
+                        />
+                        <label htmlFor="file-upload-input">
+                            <motion.div className='sch-hover-effect' whileHover={{ scale: 1.10}}>
+                                <Button variant="contained" color="primary" component="span">
+                                    Choose File
+                                </Button>
+                            </motion.div>
+                        </label>
+                    </motion.div>
 
                     {/* Button to open the menu for choosing file type */}
-                    <Button variant="contained" color="info" onClick={handleMenuClick}>
-                        Select File Type
-                    </Button>
-                    <Menu
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={handleMenuClose}
-                    >
-                        <MenuItem onClick={() => setFileTypeAndClose('demandFile')}>Demand File</MenuItem>
-                        <MenuItem onClick={() => setFileTypeAndClose('costFile')}>Workers Cost File</MenuItem>
-                        <MenuItem onClick={() => setFileTypeAndClose('workersFile')}>Workers List File</MenuItem>
-                    </Menu>
+                    <motion.div className='sch-file-type-btn'>
+                        <motion.div className='sch-hover-effect' whileHover={{scale: 1.10}}>
+                            <Button variant="contained" color="info" onClick={handleMenuClick}>
+                                Select File Type
+                            </Button>
+                        </motion.div>
+                        <Menu
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={handleMenuClose}>
+                            <MenuItem onClick={() => setFileTypeAndClose('demandFile')}>Demand File</MenuItem>
+                            <MenuItem onClick={() => setFileTypeAndClose('costFile')}>Workers Cost File</MenuItem>
+                            <MenuItem onClick={() => setFileTypeAndClose('workersFile')}>Workers List File</MenuItem>
+                        </Menu>
+                    </motion.div>
 
                     {/* Button to upload the file */}
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={handleFileUpload}
-                    >
-                        Upload File
-                    </Button>
-                </div>
+                    <motion.div className='sch-hover-effect' whileHover={{scale: 1.10}}>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={handleFileUpload}>
+                            Upload File
+                        </Button>
+                    </motion.div>
+                    
+                </motion.div>
 
                 {/* Return Button */}
-                <Button
-                    variant="contained"
-                    color="default"
-                    onClick={() => navigate(-1)}
-                    style={{ marginTop: '20px' }}
-                >
-                    Return
-                </Button>
-            </Container>
+                <motion.div className='sch-hover-effect' whileHover={{scale: 1.10}}>
+                    <Button
+                        variant="contained"
+                        color="default"
+                        onClick={() => navigate(-1)}
+                        style={{ marginTop: '20px' }}>
+                        Return
+                    </Button>
+                </motion.div>
+                
         </motion.div>
     );
 };
