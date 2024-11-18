@@ -119,98 +119,93 @@ function Upload({ onScheduleUpdate }) {
 
   return (
     <motion.div
+      className="upload-background"
       initial={{ backgroundPosition: '0% 50%' }}
       animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
-      transition={{
-        duration: 10,
-        ease: 'easeInOut',
-        repeat: Infinity,
-      }}
-      className='background-animate'
-    >
-      <Container maxWidth="sm" className='content-container'>
-        <motion.div
-          id='motion-container-outer'
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className='motion-container'
-        >
-          <Typography variant="h4" gutterBottom className='upload-title'>
-            Upload Files
-          </Typography>
+      transition={{ duration: 10, ease: 'easeInOut', repeat: Infinity }}>
+      <motion.div
+        className="upload-container"
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}>
+        
+        <motion.h1 className='upload-title'>Upload Files</motion.h1>
 
-          {/* Demand File Input */}
-          <div>
-            <input accept=".csv" className='hidden-input' id="demand-file" type="file" onChange={handleFileChange(setDemandFile)} />
-            <label htmlFor="demand-file">
-              <motion.div className='hover-effect' whileHover={{ scale: 1.10 }}>
-                <Button
-                  variant="contained"
-                  color="transparent"
-                  component="span"
-                  className='upload-file-btn'
-                >
-                  Choose Demand Data File
-                </Button>
-              </motion.div>
-            </label>
-            {demandFile && <Typography variant="subtitle1" gutterBottom>Selected file: {demandFile.name}</Typography>}
-          </div>
+        <motion.div className='upload-input-wrapper'>
+          <input 
+            accept=".csv" 
+            className='hidden-input' 
+            id="demand-file" type="file" 
+            onChange={handleFileChange(setDemandFile)} />
+          <label htmlFor="demand-file">
+            <motion.div className='upload-hover-effect' whileHover={{ scale: 1.10 }}>
+              <Button
+                variant="contained"
+                color="transparent"
+                component="span"
+                className={`upload-file-btn ${demandFile ? 'selected' : ''}`}>
+                  {demandFile ? `Selected: ${demandFile.name}` : "Choose Demand File Data"}
+              </Button>
+            </motion.div>
+          </label>
+        </motion.div>
 
-          {/* Cost File Input */}
-          <div style={{ marginTop: 20 }}>
-            <input accept=".csv" className='hidden-input' id="cost-file" type="file" onChange={handleFileChange(setCostFile)} />
-            <label htmlFor="cost-file">
-              <motion.div className='hover-effect' whileHover={{ scale: 1.10 }}>
-                <Button
-                  variant="contained"
-                  color="transparent"
-                  component="span"
-                  className='upload-file-btn'
-                >
-                  Choose Worker Cost File
-                </Button>
-              </motion.div>
-            </label>
-            {costFile && <Typography variant="subtitle1" gutterBottom>Selected file: {costFile.name}</Typography>}
-          </div>
+        <motion.div className='upload-input-wrapper'>
+          <input 
+            accept=".csv" 
+            className='hidden-input' 
+            id="cost-file" 
+            type="file" 
+            onChange={handleFileChange(setCostFile)} />
+          <label htmlFor="cost-file">
+            <motion.div className='upload-hover-effect' whileHover={{ scale: 1.10 }}>
+              <Button
+                variant="contained"
+                color="transparent"
+                component="span"
+                className={`upload-file-btn ${costFile ? 'selected' : ''}`}>
+                  {costFile ? `Selected: ${costFile.name}` : "Choose Worker Cost File"}
+              </Button>
+            </motion.div>
+          </label>
+        </motion.div>
 
-          {/* Workers File Input */}
-          <div style={{ marginTop: 20 }}>
-            <input accept=".csv" className='hidden-input' id="workers-file" type="file" onChange={handleFileChange(setWorkersFile)} />
-            <label htmlFor="workers-file">
-              <motion.div className='hover-effect' whileHover={{ scale: 1.10 }}>
-                <Button
-                  variant="contained"
-                  color="transparent"
-                  component="span"
-                  className='upload-file-btn'
-                >
-                  Choose Workers List File
-                </Button>
-              </motion.div>
-            </label>
-            {workersFile && <Typography variant="subtitle1" gutterBottom>Selected file: {workersFile.name}</Typography>}
-          </div>
+        <motion.div className='upload-input-wrapper'>
+          <input 
+            accept=".csv" 
+            className='hidden-input' 
+            id="workers-file" 
+            type="file" 
+            onChange={handleFileChange(setWorkersFile)} />
+          <label htmlFor="workers-file">
+            <motion.div className='upload-hover-effect' whileHover={{ scale: 1.10 }}>
+              <Button
+                variant="contained"
+                color="transparent"
+                component="span"
+                className={`upload-file-btn ${workersFile ? 'selected' : ''}`}>
+                  {workersFile ? `Selected: ${workersFile.name}` : "Choose Workers List Data"}
+              </Button>
+            </motion.div>
+        </label>
+        </motion.div>
 
-          {/* Upload Button */}
-          <motion.div className='hover-effect' whileHover={{ scale: 1.10 }}>
+        <motion.div 
+          className='upload-hover-effect'
+          whileHover={{ scale: 1.10 }}>
             <Button
+              className='upload-all-btn'
               variant="contained"
               color="transparent"
               onClick={handleUpload}
-              disabled={uploading}
-              className='upload-all-btn'
-            >
-              Upload All
+              disabled={uploading}>
+                Upload All
             </Button>
-          </motion.div>
-          {uploading && <LinearProgress style={{ marginTop: 10 }} />}
-          {error && <Typography color="error" style={{ marginTop: 10 }}>{error}</Typography>}
         </motion.div>
-      </Container>
-    </motion.div>
+        {uploading && <LinearProgress />}
+        {error && <Typography color="error" style={{ marginTop: 10 }}>{error}</Typography>}
+      </motion.div>
+</motion.div>
   );
 }
 
