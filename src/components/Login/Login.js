@@ -47,73 +47,72 @@ function Login() {
 
     return (
         <motion.div
+            className="login-background"
             initial={{ backgroundPosition: "0% 50%" }}
             animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
-            transition={{
-                duration: 10,
-                ease: "easeInOut",
-                repeat: Infinity,
-            }}
-            className="background-animate"
-        >
+            transition={{ duration: 10, ease: "easeInOut" }}>
+            
             <motion.div
-                id="motion-container-outer"
+                className="login-container"
                 initial={{ opacity: 0, y: -50 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="motion-container"
-            >
-                <div className="login-container">
-                    <h1>
-                        Welcome!
-                        <br />
-                        Please log in to start scheduling
-                    </h1>
-                    <form onSubmit={handleLogin}>
-                        <div className="form-control">
-                            <input
-                                type="text"
-                                id="username"
-                                name="username"
-                                className="input-bar"
-                                required
-                                value={username}
-                                onChange={(event) => setUsername(event.target.value)}
-                                placeholder="Username"
-                            />
-                        </div>
-                        <div className="form-control">
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                className="input-bar"
-                                required
-                                value={password}
-                                onChange={(event) => setPassword(event.target.value)}
-                                placeholder="Password"
-                            />
-                        </div>
-                        {error && <div className="error">{error}</div>}
-                        <motion.div whileHover={{ scale: 1.1 }}>
-                            <button type="submit" className="login-btn">
-                                Login
-                            </button>
-                        </motion.div>
-                    </form>
-                    <div className="login-link">
-                        <p>
-                            Not registered yet? <Link to="/register">Click here</Link> to
-                            register
-                        </p>
-                    </div>
-                </div>
-                {/* <div className="left-bottom">
-          <img src="/logo.png" alt="logo" width="100" height="75" style={{ marginRight: '2px', borderRadius: '0%' }} />
-        </div> */}
+                transition={{ duration: 0.6 }}>
+            
+                <motion.h1
+                    className="login-h1"
+                    initial={{ opacity: 0, scale: 0.8}}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}>
+                        Login
+                </motion.h1>
+
+                <motion.form 
+                    className="login-form"
+                    onSubmit={handleLogin}
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}>
+                    
+                    <motion.input
+                        className="login-input-bar"
+                        type="text"
+                        placeholder="Username"
+                        value={username}
+                        onChange={(event) => setUsername(event.target.value)}
+                        whileFocus={{ scale: 1.05, borderColor: "#0096d6" }}
+                        transition={{ duration: 0.3 }}
+                        required />
+                    
+                    <motion.input
+                        className="login-input-bar"
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
+                        whileFocus={{ scale: 1.05, borderColor: "#0096d6" }}
+                        transition={{ duration: 0.3 }}
+                        required />
+
+                    {error && <motion.div className="error">{error}</motion.div>}
+
+                    <motion.button
+                        className="login-btn"
+                        type="submit"
+                        whileHover={{ scale: 1.05, backgroundColor: "#007bb5" }}
+                        whileTap={{ scale: 0.95 }}>
+                            Login
+                    </motion.button>
+                </motion.form>
+
+                <motion.p className="login-link">
+                    Not registered yet? <Link to="/register">Click here</Link> to register
+                </motion.p>
             </motion.div>
         </motion.div>
     );
 }
 
 export default Login;
+
+
+

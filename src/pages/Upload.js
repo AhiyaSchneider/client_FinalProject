@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Typography, Button, LinearProgress } from '@mui/material';
+import { Typography, Button, LinearProgress } from '@mui/material';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -12,6 +12,8 @@ function Upload({ onScheduleUpdate }) {
   const [demandFile, setDemandFile] = useState(null);
   const [costFile, setCostFile] = useState(null);
   const [workersFile, setWorkersFile] = useState(null);
+  const [selectedFilesCount, setSelectedFilesCount] = useState(0);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -35,9 +37,17 @@ function Upload({ onScheduleUpdate }) {
       setter(null);
     } else {
       setError('');
+      // Set the selected file
       setter(file);
+  
+      // Increment selected files count if it's a new selection
+      setSelectedFilesCount((prevCount) => {
+        const newCount = prevCount + 1;
+        setUploadProgress((newCount / 3) * 100); // Update progress for 3 files
+        return newCount;
+      });
     }
-  };
+  }
 
   const validateFileStructure = (file, expectedHeaders, fileName) => {
     return new Promise((resolve, reject) => {
@@ -95,6 +105,8 @@ function Upload({ onScheduleUpdate }) {
                     return;
                 }
             } catch (err) {
+              setSelectedFilesCount(0);
+              setUploadProgress(0);
                 console.error("Error decoding token:", err);
                 alert("Invalid token. Please log in again.");
                 navigate('/');
@@ -119,98 +131,114 @@ function Upload({ onScheduleUpdate }) {
 
   return (
     <motion.div
+      className="upload-background"
       initial={{ backgroundPosition: '0% 50%' }}
       animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
-      transition={{
-        duration: 10,
-        ease: 'easeInOut',
-        repeat: Infinity,
-      }}
-      className='background-animate'
-    >
-      <Container maxWidth="sm" className='content-container'>
-        <motion.div
-          id='motion-container-outer'
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className='motion-container'
-        >
-          <Typography variant="h4" gutterBottom className='upload-title'>
-            Upload Files
+      transition={{ duration: 10, ease: 'easeInOut', repeat: Infinity }}>
+      <motion.div
+        className="upload-container"
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}>
+        
+        <motion.h1 className='upload-title'>Upload Files</motion.h1>
+
+        <motion.div className="upload-progress-container">
+          <LinearProgress
+            className="upload-progress-bar"
+            variant="determinate"
+            value={uploadProgress}/>
+          <Typography
+            className="upload-progress-text"
+            variant="body2">
+              {`${Math.round(uploadProgress)}%`}
           </Typography>
-
-          {/* Demand File Input */}
-          <div>
-            <input accept=".csv" className='hidden-input' id="demand-file" type="file" onChange={handleFileChange(setDemandFile)} />
-            <label htmlFor="demand-file">
-              <motion.div className='hover-effect' whileHover={{ scale: 1.10 }}>
-                <Button
-                  variant="contained"
-                  color="transparent"
-                  component="span"
-                  className='upload-file-btn'
-                >
-                  Choose Demand Data File
-                </Button>
-              </motion.div>
-            </label>
-            {demandFile && <Typography variant="subtitle1" gutterBottom>Selected file: {demandFile.name}</Typography>}
-          </div>
-
-          {/* Cost File Input */}
-          <div style={{ marginTop: 20 }}>
-            <input accept=".csv" className='hidden-input' id="cost-file" type="file" onChange={handleFileChange(setCostFile)} />
-            <label htmlFor="cost-file">
-              <motion.div className='hover-effect' whileHover={{ scale: 1.10 }}>
-                <Button
-                  variant="contained"
-                  color="transparent"
-                  component="span"
-                  className='upload-file-btn'
-                >
-                  Choose Worker Cost File
-                </Button>
-              </motion.div>
-            </label>
-            {costFile && <Typography variant="subtitle1" gutterBottom>Selected file: {costFile.name}</Typography>}
-          </div>
-
-          {/* Workers File Input */}
-          <div style={{ marginTop: 20 }}>
-            <input accept=".csv" className='hidden-input' id="workers-file" type="file" onChange={handleFileChange(setWorkersFile)} />
-            <label htmlFor="workers-file">
-              <motion.div className='hover-effect' whileHover={{ scale: 1.10 }}>
-                <Button
-                  variant="contained"
-                  color="transparent"
-                  component="span"
-                  className='upload-file-btn'
-                >
-                  Choose Workers List File
-                </Button>
-              </motion.div>
-            </label>
-            {workersFile && <Typography variant="subtitle1" gutterBottom>Selected file: {workersFile.name}</Typography>}
-          </div>
-
-          {/* Upload Button */}
-          <motion.div className='hover-effect' whileHover={{ scale: 1.10 }}>
-            <Button
-              variant="contained"
-              color="transparent"
-              onClick={handleUpload}
-              disabled={uploading}
-              className='upload-all-btn'
-            >
-              Upload All
-            </Button>
-          </motion.div>
-          {uploading && <LinearProgress style={{ marginTop: 10 }} />}
-          {error && <Typography color="error" style={{ marginTop: 10 }}>{error}</Typography>}
         </motion.div>
-      </Container>
-    </motion.div>
+
+        <motion.div className='upload-input-wrapper'>
+          <input 
+            accept=".csv" 
+            className='hidden-input' 
+            id="demand-file" type="file" 
+            onChange={handleFileChange(setDemandFile)} />
+          <label htmlFor="demand-file">
+            <motion.div className='upload-hover-effect' whileHover={{ scale: 1.10 }}>
+              <Button
+                variant="contained"
+                color="transparent"
+                component="span"
+                className={`upload-file-btn ${demandFile ? 'selected' : ''}`}>
+                  {demandFile ? `Selected: ${demandFile.name}` : "Choose Demand File Data"}
+              </Button>
+            </motion.div>
+          </label>
+        </motion.div>
+
+        <motion.div className='upload-input-wrapper'>
+          <input 
+            accept=".csv" 
+            className='hidden-input' 
+            id="cost-file" 
+            type="file" 
+            onChange={handleFileChange(setCostFile)} />
+          <label htmlFor="cost-file">
+            <motion.div className='upload-hover-effect' whileHover={{ scale: 1.10 }}>
+              <Button
+                variant="contained"
+                color="transparent"
+                component="span"
+                className={`upload-file-btn ${costFile ? 'selected' : ''}`}>
+                  {costFile ? `Selected: ${costFile.name}` : "Choose Worker Cost File"}
+              </Button>
+            </motion.div>
+          </label>
+        </motion.div>
+
+        <motion.div className='upload-input-wrapper'>
+          <input 
+            accept=".csv" 
+            className='hidden-input' 
+            id="workers-file" 
+            type="file" 
+            onChange={handleFileChange(setWorkersFile)} />
+          <label htmlFor="workers-file">
+            <motion.div className='upload-hover-effect' whileHover={{ scale: 1.10 }}>
+              <Button
+                variant="contained"
+                color="transparent"
+                component="span"
+                className={`upload-file-btn ${workersFile ? 'selected' : ''}`}>
+                  {workersFile ? `Selected: ${workersFile.name}` : "Choose Workers List Data"}
+              </Button>
+            </motion.div>
+        </label>
+        </motion.div>
+
+        <motion.div 
+          className='upload-hover-effect'
+          whileHover={{ scale: 1.10 }}>
+            <motion.div
+              className='upload-btn-wrapper'
+              whileHover={{ scale: 1.10 }}>
+                <Button
+                  className='upload-all-btn'
+                  variant="contained"
+                  color="transparent"
+                  onClick={handleUpload}
+                  disabled={uploading}>
+                    Upload All
+                </Button>
+                {error && (
+                  <Typography
+                    className='error-msg'
+                    variant='body2'>
+                      {error}
+                    </Typography>
+                )}
+              </motion.div>
+        </motion.div>
+      </motion.div>
+</motion.div>
   );
 }
 

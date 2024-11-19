@@ -4,51 +4,47 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  /* Prevents any horizontal scroll if background extends */
+  font-family: 'Poppins', sans-serif;
+  background-color: #ecf7fc;
 }
 
-.background-animate {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+.upload-background {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(-45deg, #FF5733, #C70039, #900C3F, #581845);
-  background-size: 400%, 400%;
-  z-index: -1;
+  height: 100vh;
+  background: linear-gradient(135deg, #0096d6, #07185a);
+  color: #ecf7fc;
 }
 
-.content-container {
-  min-width: 100vh;
-  display: flex;
+.upload-container {
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   text-align: center;
+  width: 350px;
 }
 
-.motion-container {
-  width: 70%;
-  padding-top: '2rem';
-  padding-bottom: '2rem';
-  overflow: 'hidden';
-}
 
 .upload-title {
-  font-family: 'Poppins', sans-serif !important;
-  font-weight: 700 !important;
-  padding-bottom: 20px !important;
-  color: #FFFFFF;
+  color: #07185a;
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
 
 .hidden-input {
   display: none;
 }
 
-.hover-effect {
+.upload-input-wrapper {
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.upload-hover-effect {
   display: inline-block;
   width: 100%;
 }
@@ -56,21 +52,77 @@ body {
 .upload-file-btn {
   font-family: 'Poppins', sans-serif !important;
   font-weight: 500 !important;
-  color: #FFFFFF !important;
+  color: #07185a !important;
   text-transform: none !important;
-  width: 65%;
-  border: 1.5px solid #FFFFFF !important;
+  width: 75%;
+  border: 1.5px solid #07185a !important;
   border-radius: 15px !important;
   transition: background-color 0.5s ease, color 0.5s ease !important;
+}
+
+.upload-file-btn.selected {
+  color: #ffffff !important;
+  background-color: #07185a;
 }
 
 .upload-all-btn {
   font-family: 'Poppins', sans-serif !important;
   font-weight: 500 !important;
-  color: #FFFFFF !important;
+  color: #07185a !important;
   text-transform: none !important;
   width: 40% !important;
   margin-top: 20px !important;
-  border: 1.5px solid #FFFFFF !important;
+  border: 1.5px solid #07185a !important;
   border-radius: 15px !important;
+}
+
+.upload-file-btn:hover,
+.upload-all-btn:hover {
+  color:#ffffff !important;
+  background-color: #07185a;
+}
+
+.upload-progress-bar {
+  height: 20px !important; /* Increase height for better visibility */
+  border-radius: 5px; /* Smooth corners */
+  margin-bottom: 20px;
+  overflow: hidden;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+.upload-progress-bar .MuiLinearProgress-bar {
+  background: linear-gradient(90deg, #0096d6, #07185a); /* Gradient for progress fill */
+  border-radius: 5px; /* Smooth corners for the fill */
+  transition: width 0.3s ease-in-out; /* Smooth transition effect */
+}
+
+.upload-progress-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.upload-progress-text {
+  font-family: 'Poppins', sans-serif !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: bold;
+  font-size: 1rem !important;
+  color: #ffffff; /* Text color for contrast */
+  z-index: 1; /* Ensure it appears above the progress bar */
+}
+
+.upload-btn-wrapper {
+  margin-top: 20px;
+  text-align: center;
+  position: relative;
+}
+.error-msg {
+  font-family: 'Poppins', sans-serif !important; 
+  margin-top: 10px !important;
+  color: #ff1744; /* Error color */
+  font-size: 1rem;
+  font-weight: bold;
 }
